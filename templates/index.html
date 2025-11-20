@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Servidor de Upload e Download</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="servidor.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="servidor.ico" type="image/x-icon" />
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">RAZIEL SERVER 🦇</h1>
         <h1 class="text-center mb-4">Servidor de Upload e Download</h1>
         
+        <!-- Mensagem opcional -->
+        {% if message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+        {% endif %}
         
         <!-- Formulário de Upload -->
         <div class="card mb-4">
@@ -22,7 +29,7 @@
                 <form action="/upload" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="files" class="form-label">Selecione os arquivos:</label>
-                        <input type="file" class="form-control" id="files" name="files" multiple required>
+                        <input type="file" class="form-control" id="files" name="files" multiple required />
                     </div>
                     <button type="submit" class="btn btn-primary">Enviar Arquivos</button>
                 </form>
@@ -36,16 +43,16 @@
             </div>
             <div class="card-body">
                 {% if files %}
-                    <ul class="list-group">
-                        {% for file in files %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ file }}
-                                <a href="/download/{{ file }}" class="btn btn-success btn-sm">Baixar</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                <ul class="list-group">
+                    {% for file in files %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ file }}
+                        <a href="/download/{{ file }}" class="btn btn-success btn-sm">Baixar</a>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% else %}
-                    <p class="text-muted">Nenhum arquivo disponível.</p>
+                <p class="text-muted">Nenhum arquivo disponível.</p>
                 {% endif %}
             </div>
         </div>
