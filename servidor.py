@@ -1,40 +1,72 @@
-import os
 from flask import Flask, request, render_template, redirect, url_for
-import werkzeug.utils
+import firebase_admin
+from firebase_admin import credentials, storage
+import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limite 16MB
 
-# Cria pasta uploads se não existir
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Inicialize o Firebase com suas credenciais
+# Substitua 'path/to/firebase-key.json' pelo caminho do arquivo baixado (ex.: 'firebase-key.json')
+# No Render, faça upload do arquivo JSON e use o caminho relativo, ou use variáveis de ambiente para a chave.
+cred = credentials.Certificate('firebase-key.json')  # Ou use uma variável de ambiente para segurança
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'seu-project-id.appspot.com'  # Substitua pelo seu Project ID + .appspot.com
+})
+
+bucket = storage.bucket()
+
+# Função para listar arquivos no Firebase Storage
+def list_firebase_files():
+    try:
+        blobs = bucket.list_blobs()
+        return [blob.name for blob in blobs]
+    except Exception as e:
+        print(f"Erro ao listar arquivos: {e}")
+        return []
+
+# Função para fazer upload para Firebase
+def upload_to_firebase(file, filename):
+    try:
+        blob = bucket.blob(filename)
+        blob.upload_from_file(file)
+        return True
+    except Exception as e:
+        print(f"Erro ao fazer upload: {e}")
+        return False
 
 @app.route('/')
 def index():
-    # Renderiza template com mensagem opcional
-    message = request.args.get('message')
-    return render_template('index.html', message=message)
+    files = list_firebase_files()
+    return render_template('index.html', files=files)
 
 @app.route('/upload', methods=['POST'])
-def upload_file():
+def upload():
     if 'file' not in request.files:
-        return redirect(url_for('index', message="Nenhum arquivo selecionado."))
+        return 'Erro: Nenhuma parte de arquivo encontrada.'
+    
     file = request.files['file']
     if file.filename == '':
-        return redirect(url_for('index', message="Nenhum arquivo selecionado."))
-    if file:
-        filename = werkzeug.utils.secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('index', message="Arquivo enviado com sucesso!"))
-    return redirect(url_for('index'))
+        return 'Erro: Nenhum arquivo selecionado.'
+    
+    # Validação básica (opcional)
+    if not file.filename.lower().endswith(('.txt', '.pdf', '.jpg', '.png')):
+        return 'Erro: Tipo de arquivo não permitido.'
+    
+    filename = file.filename  # Firebase lida com segurança automaticamente
+    
+    if upload_to_firebase(file, filename):
+        return redirect(url_for('index'))
+    else:
+        return 'Erro: Falha no upload.'
 
-@app.route('/upload', methods=['GET'])
-def upload_get():
-    # Retorna erro para acesso errado via GET
-    return "Método GET não permitido na rota /upload.", 405
-
+@app.route('/download/<filename>')
+def download(filename):
+    try:
+        blob = bucket.blob(filename)
+        url = blob.generate_signed_url(expiration=3600)  # URL válida por 1 hora
+        return redirect(url)
+    except Exception as e:
+        return f'Erro ao gerar link de download: {e}'
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True)
