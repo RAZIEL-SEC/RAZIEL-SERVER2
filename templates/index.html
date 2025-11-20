@@ -1,84 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RAZIEL-SERVER - Upload/Download</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="servidor.ico" type="image/x-icon">
     <style>
-        /* Preserve seu estilo original, adicione aqui se desejar */
+        /* Tema dark inspirado no segundo HTML, aplicado sobre Bootstrap */
         body {
             background-color: #121212;
             color: #ffffff;
             font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: 30px;
         }
-        h1, h2 {
+        .container {
+            background-color: #121212;
+        }
+        .card {
+            background-color: #222;
+            border: 1px solid #333;
+            color: #ffffff;
+        }
+        .card-header {
+            background-color: #333;
             color: #f5f5f5;
         }
-        form {
-            margin: 20px auto;
-            background-color: #222;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        input[type="file"] {
-            color: #fff;
-        }
-        input[type="submit"] {
+        .btn-primary {
             background-color: #ff4b5c;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
+            border-color: #ff4b5c;
         }
-        input[type="submit"]:hover {
+        .btn-primary:hover {
             background-color: #e04352;
+            border-color: #e04352;
         }
-        ul {
-            list-style: none;
-            padding: 0;
-            max-width: 400px;
-            margin: 0 auto;
+        .btn-success {
+            background-color: #1db954;
+            border-color: #1db954;
         }
-        ul li {
-            margin: 10px 0;
-            padding: 10px;
+        .btn-success:hover {
+            background-color: #17a74a;
+            border-color: #17a74a;
+        }
+        .list-group-item {
             background-color: #222;
-            border-radius: 8px;
-            text-align: left;
-            word-break: break-word;
+            border-color: #333;
+            color: #ffffff;
         }
-        ul li a {
+        .list-group-item a {
             color: #1db954;
             text-decoration: none;
-            font-weight: bold;
         }
-        ul li a:hover {
+        .list-group-item a:hover {
             text-decoration: underline;
+        }
+        .text-muted {
+            color: #888 !important;
+        }
+        h1, h2, h5 {
+            color: #f5f5f5;
+        }
+        .form-control {
+            background-color: #333;
+            border-color: #555;
+            color: #ffffff;
+        }
+        .form-control:focus {
+            background-color: #333;
+            border-color: #777;
+            color: #ffffff;
+        }
+        .form-label {
+            color: #f5f5f5;
         }
     </style>
 </head>
 <body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">RAZIEL SERVER 🦇</h1>
+        <h1 class="text-center mb-4">Servidor de Upload e Download</h1>
 
-    <h1>Servidor RAZIEL - Upload e Download</h1>
+        <!-- Formulário de Upload (mantido como no segundo HTML: upload de um arquivo) -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Fazer Upload de Arquivos</h5>
+            </div>
+            <div class="card-body">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Selecione o arquivo:</label>
+                        <input type="file" class="form-control" id="file" name="file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Arquivo</button>
+                </form>
+            </div>
+        </div>
 
-    <!-- Formulário corrigido: enctype obrigatório para upload funcionar -->
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <input type="submit" value="Enviar">
-    </form>
+        <!-- Lista de Arquivos para Download (mantido como no segundo HTML: links simples) -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Arquivos Disponíveis para Download</h5>
+            </div>
+            <div class="card-body">
+                {% if files %}
+                    <ul class="list-group">
+                        {% for file in files %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ file }}
+                                <a href="/download/{{ file }}" class="btn btn-success btn-sm">Baixar</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Nenhum arquivo disponível.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-    <h2>Arquivos disponíveis para download:</h2>
-    <ul>
-        {% for file in files %}
-        <li><a href="/download/{{ file }}">{{ file }}</a></li>
-        {% else %}
-        <li><em>Nenhum arquivo disponível.</em></li>
-        {% endfor %}
-    </ul>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
