@@ -45,12 +45,12 @@
             -webkit-text-fill-color: transparent;
             text-align: center;
             margin-bottom: 1rem;
-            text-shadow: 0 0 20px rgba(156, 39, 176, 0.5);
+            text-shadow: 0 0 20px rgba(81, 27, 112, 0.5);
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(156, 39, 176, 0.5); }
+            from { text-shadow: 0 0 20px rgba(92, 10, 168, 0.5); }
             to { text-shadow: 0 0 30px rgba(156, 39, 176, 0.8); }
         }
 
@@ -64,7 +64,7 @@
         .card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border-radius: 1px;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
@@ -78,7 +78,6 @@
         .card-header {
             background: rgba(74, 14, 78, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px 15px 0 0;
             color: #ffffff;
             font-weight: bold;
         }
@@ -91,9 +90,9 @@
         .form-control {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: #ffffff;
-            padding: 0.75rem;
+            border-radius: 15px;
+            color: #f5f5f5;
+            padding: 1.20rem;
             transition: all 0.3s ease;
         }
 
@@ -108,6 +107,7 @@
             color: #ffffff;
             font-weight: 500;
             margin-bottom: 0.5rem;
+
         }
 
         /* Botões com gradiente roxo e efeitos */
@@ -128,7 +128,7 @@
         }
 
         .btn-success {
-            background: linear-gradient(45deg, #4a0e4e, #9c27b0);
+            background: linear-gradient(45deg, #4a0e4e, #3a0144);
             border: none;
             border-radius: 20px;
             padding: 0.5rem 1rem;
@@ -192,7 +192,7 @@
 <body>
     <div class="glass-container">
         <h1>RAZIEL SERVER 🦇</h1>
-        <p class="text-center text-muted mb-4">Servidor de Upload e Download Moderno</p>
+        <p class="text-center text-muted mb-4">Servidor de Upload e Download</p>
 
         <!-- Formulário de Upload -->
         <div class="card mb-4">
